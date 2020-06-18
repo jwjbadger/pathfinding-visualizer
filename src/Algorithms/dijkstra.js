@@ -47,9 +47,9 @@ const getUnvisitedNeighbors = (currentNode, grid) => {
   // Get everything on the top of this node (if there is anything)
   if (row < grid.length - 1) neighbors.push(grid[row + 1][col]);
   // Get everything on the left of this node (if there is anything)
-  if (row > 0) neighbors.push(grid[row][col - 1]);
+  if (col > 0) neighbors.push(grid[row][col - 1]);
   // Get everything on the right of this node (if there is anything)
-  if (row < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
+  if (col < grid[0].length - 1) neighbors.push(grid[row][col + 1]);
 
   // Only return the unvisited nodes
   return neighbors.filter((neighbor) => !neighbor.isVisited);

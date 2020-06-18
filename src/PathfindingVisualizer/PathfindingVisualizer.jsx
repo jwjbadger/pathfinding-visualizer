@@ -3,6 +3,7 @@ import Node from './Node/Node';
 
 import { dijkstra, getPath } from '../Algorithms/dijkstra';
 
+import { Button } from 'react-bootstrap';
 import './PathfindingVisualizer.css';
 
 const START_ROW = 10;
@@ -23,32 +24,79 @@ export default class PathfindingVisualizer extends Component {
     this.setState({ grid });
   }
 
+  animateDijkstra(orderedNodes, nodesInPath) {
+    for (let i = 0; i <= orderedNodes.length; i++) {
+      if (i === orderedNodes.length) {
+        setTimeout(() => {
+          this.animatePath(nodesInPath);
+        }, 10 * i);
+        return;
+      }
+
+      setTimeout(() => {
+        const node = orderedNodes[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className +=
+          ' node-visited';
+      }, 10 * i);
+    }
+  }
+
+  animatePath(nodesInPath) {
+    for (let i = 0; i < nodesInPath.length; i++) {
+      setTimeout(() => {
+        const node = nodesInPath[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className +=
+          ' node-path';
+      }, 50 * i);
+    }
+  }
+
+  visualizeDijkstra() {
+    const { grid } = this.state;
+
+    const startNode = grid[START_ROW][START_COLUMN];
+    const finishNode = grid[FINISH_ROW][FINISH_COLUMN];
+
+    const orderedNodes = dijkstra(grid, startNode, finishNode);
+    const nodesInPath = getPath(finishNode);
+
+    this.animateDijkstra(orderedNodes, nodesInPath);
+  }
+
   render() {
     const { grid } = this.state;
 
     return (
-      <div className='grid'>
-        {/* Iterate over each row in the grid */}
-        {grid.map((row, rowIdx) => {
-          // Return each row, with nodes created
-          return (
-            <div key={rowIdx}>
-              {row.map((node, nodeIdx) => {
-                const { row, col, isFinish, isStart } = node;
-                return (
-                  <Node
-                    row={row}
-                    col={col}
-                    key={nodeIdx}
-                    isStart={isStart}
-                    isFinish={isFinish}
-                  />
-                );
-              })}
-            </div>
-          );
-        })}
-      </div>
+      <>
+        <div className='header'>
+          <Button variant='info' onClick={() => this.visualizeDijkstra()}>
+            Visualize
+          </Button>
+        </div>
+        <div className='grid'>
+          {/* Iterate over each row in the grid */}
+          {grid.map((row, rowIdx) => {
+            // Return each row, with nodes created
+            return (
+              <div key={rowIdx}>
+                {row.map((node, nodeIdx) => {
+                  const { row, col, isFinish, isStart, isVisited } = node;
+                  return (
+                    <Node
+                      row={row}
+                      col={col}
+                      isStart={isStart}
+                      isFinish={isFinish}
+                      isVisited={isVisited}
+                      key={nodeIdx}
+                    />
+                  );
+                })}
+              </div>
+            );
+          })}
+        </div>
+      </>
     );
   }
 }
@@ -59,6 +107,8 @@ const createNewNode = (row, col) => {
     col,
     isStart: row === START_ROW && col === START_COLUMN,
     isFinish: row === FINISH_ROW && col === FINISH_COLUMN,
+    isVisited: false,
+    distance: Infinity,
   };
 };
 
