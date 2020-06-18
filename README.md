@@ -2,6 +2,16 @@
 
 This project was created following the rough instructions given by [Clément Mihailescu](https://www.youtube.com/watch?v=msttfIHHkak). This project will hopefully be used to learn about React and path-finding algorithms. Hopefully this project will also give an insight into creating projects and how to go about working on them.
 
+## Running
+
+If you want to try out this project **locally**, run:
+
+```bash
+git clone https://github.com/jwjbadger/pathfinding-visualizer.git
+```
+
+then, `npm run` or `npm run build` from the project's root folder depending on the amount of optimization you want.
+
 ## The Algorithms
 
 ### Dijkstra's
