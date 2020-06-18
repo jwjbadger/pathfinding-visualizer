@@ -15,6 +15,7 @@ export function dijkstra(grid, startNode, finishNode) {
     sortNodes(unvisited);
     const closestNode = unvisited.shift();
 
+    if (closestNode.isWall) continue;
     // If the closest node is at distance infinity, that means we are stuck...
     if (closestNode.distance === Infinity) return orderedNodes;
 

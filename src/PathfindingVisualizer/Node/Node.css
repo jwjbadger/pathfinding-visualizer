@@ -12,6 +12,10 @@
 .node-finish {
   background-image: url(./finish.png);
 }
+
+.node-wall {
+  background-color: #43464b;
+}
 .node-visited {
   animation-name: visitedAnimation;
   animation-duration: 1.5s;

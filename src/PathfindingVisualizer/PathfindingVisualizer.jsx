@@ -16,12 +16,28 @@ export default class PathfindingVisualizer extends Component {
     super(props);
     this.state = {
       grid: [],
+      mouseIsPressed: false,
     };
   }
 
   componentDidMount() {
     const grid = getInitialGrid();
     this.setState({ grid });
+  }
+
+  handleMouseDown(row, col) {
+    const newGrid = getGridWithWall(this.state.grid, row, col);
+    this.setState({ grid: newGrid, mouseIsPressed: true });
+  }
+
+  handleMouseEnter(row, col) {
+    if (!this.state.mouseIsPressed) return;
+    const newGrid = getGridWithWall(this.state.grid, row, col);
+    this.setState({ grid: newGrid });
+  }
+
+  handleMouseUp() {
+    this.setState({ mouseIsPressed: false });
   }
 
   animateDijkstra(orderedNodes, nodesInPath) {
@@ -64,7 +80,7 @@ export default class PathfindingVisualizer extends Component {
   }
 
   render() {
-    const { grid } = this.state;
+    const { grid, mouseIsPressed } = this.state;
 
     return (
       <>
@@ -80,14 +96,20 @@ export default class PathfindingVisualizer extends Component {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { row, col, isFinish, isStart, isVisited } = node;
+                  const { row, col, isFinish, isStart, isWall } = node;
                   return (
                     <Node
                       row={row}
                       col={col}
                       isStart={isStart}
                       isFinish={isFinish}
-                      isVisited={isVisited}
+                      isWall={isWall}
+                      mouseIsPressed={mouseIsPressed}
+                      onMouseDown={(row, col) => this.handleMouseDown(row, col)}
+                      onMouseEnter={(row, col) =>
+                        this.handleMouseEnter(row, col)
+                      }
+                      onMouseUp={() => this.handleMouseUp()}
                       key={nodeIdx}
                     />
                   );
@@ -109,6 +131,8 @@ const createNewNode = (row, col) => {
     isFinish: row === FINISH_ROW && col === FINISH_COLUMN,
     isVisited: false,
     distance: Infinity,
+    isWall: false,
+    previousNode: null,
   };
 };
 
@@ -124,4 +148,17 @@ const getInitialGrid = () => {
     grid.push(currentRow);
   }
   return grid;
+};
+
+const getGridWithWall = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+
+  const newNode = {
+    ...node,
+    isWall: !node.iswall,
+  };
+  newGrid[row][col] = newNode;
+
+  return newGrid;
 };
