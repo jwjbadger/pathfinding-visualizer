@@ -1,4 +1,5 @@
 .grid {
-    margin: 100px 0 0 0;
-    font-size: 0;
+  margin: 100px 0 0 0;
+  /* The font size has to be 0, so that there is no space between nodes the is created for text */
+  font-size: 0;
 }
