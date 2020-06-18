@@ -3,6 +3,7 @@
   height: 25px;
   outline: 1px solid #408080;
   display: inline-block;
+  background-color: #fff;
 }
 
 .node-start {

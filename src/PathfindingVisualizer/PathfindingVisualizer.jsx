@@ -21,7 +21,7 @@ export default class PathfindingVisualizer extends Component {
   }
 
   componentDidMount() {
-    const grid = getInitialGrid();
+    const grid = getNewGrid();
     this.setState({ grid });
   }
 
@@ -65,6 +65,7 @@ export default class PathfindingVisualizer extends Component {
           ' node-path';
       }, 50 * i);
     }
+    return;
   }
 
   visualizeDijkstra() {
@@ -79,6 +80,10 @@ export default class PathfindingVisualizer extends Component {
     this.animateDijkstra(orderedNodes, nodesInPath);
   }
 
+  clearGrid() {
+    window.location.reload(false);
+  }
+
   render() {
     const { grid, mouseIsPressed } = this.state;
 
@@ -88,6 +93,9 @@ export default class PathfindingVisualizer extends Component {
           <Button variant='info' onClick={() => this.visualizeDijkstra()}>
             Visualize
           </Button>
+          <Button variant='info' onClick={() => this.clearGrid()}>
+            Clear
+          </Button>
         </div>
         <div className='grid'>
           {/* Iterate over each row in the grid */}
@@ -96,13 +104,21 @@ export default class PathfindingVisualizer extends Component {
             return (
               <div key={rowIdx}>
                 {row.map((node, nodeIdx) => {
-                  const { row, col, isFinish, isStart, isWall } = node;
+                  const {
+                    row,
+                    col,
+                    isFinish,
+                    isStart,
+                    isVisited,
+                    isWall,
+                  } = node;
                   return (
                     <Node
                       row={row}
                       col={col}
                       isStart={isStart}
                       isFinish={isFinish}
+                      isVisited={isVisited}
                       isWall={isWall}
                       mouseIsPressed={mouseIsPressed}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
@@ -136,7 +152,7 @@ const createNewNode = (row, col) => {
   };
 };
 
-const getInitialGrid = () => {
+const getNewGrid = () => {
   const grid = [];
 
   // Iterate over each row and column, and add each full row to grid
@@ -156,7 +172,7 @@ const getGridWithWall = (grid, row, col) => {
 
   const newNode = {
     ...node,
-    isWall: !node.iswall,
+    isWall: !node.isWall,
   };
   newGrid[row][col] = newNode;
 

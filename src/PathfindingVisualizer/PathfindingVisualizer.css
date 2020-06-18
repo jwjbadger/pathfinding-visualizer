@@ -4,6 +4,10 @@
   font-size: 0;
 }
 
+button {
+  margin-left: 5px;
+}
+
 .header {
   background-color: #343a40;
   height: 60px;
