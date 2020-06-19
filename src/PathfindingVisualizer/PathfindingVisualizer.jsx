@@ -17,6 +17,10 @@ export default class PathfindingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
+      holdingStart: false,
+      holdingFinish: false,
+      start: [START_ROW, START_COLUMN],
+      finish: [FINISH_ROW, FINISH_COLUMN],
     };
   }
 
@@ -26,18 +30,38 @@ export default class PathfindingVisualizer extends Component {
   }
 
   handleMouseDown(row, col) {
-    const newGrid = getGridWithWall(this.state.grid, row, col);
-    this.setState({ grid: newGrid, mouseIsPressed: true });
+    const grid = this.state.grid;
+    if (grid[row][col].isStart) {
+      this.setState({ holdingStart: true, mouseIsPressed: true });
+    } else if (grid[row][col].isFinish) {
+      this.setState({ holdingFinish: true, mouseIsPressed: true });
+    } else {
+      const newGrid = getGridWithWall(grid, row, col);
+      this.setState({ grid: newGrid, mouseIsPressed: true });
+    }
   }
 
   handleMouseEnter(row, col) {
     if (!this.state.mouseIsPressed) return;
-    const newGrid = getGridWithWall(this.state.grid, row, col);
-    this.setState({ grid: newGrid });
+    const { grid, holdingStart, holdingFinish } = this.state;
+    if (holdingStart) {
+      const newGrid = updateStart(grid, row, col, this.state.start);
+      this.setState({ grid: newGrid, start: [row, col] });
+    } else if (holdingFinish) {
+      const newGrid = updateFinish(grid, row, col, this.state.finish);
+      this.setState({ grid: newGrid, finish: [row, col] });
+    } else {
+      const newGrid = getGridWithWall(grid, row, col);
+      this.setState({ grid: newGrid });
+    }
   }
 
   handleMouseUp() {
-    this.setState({ mouseIsPressed: false });
+    this.setState({
+      mouseIsPressed: false,
+      holdingStart: false,
+      holdingFinish: false,
+    });
   }
 
   animateDijkstra(orderedNodes, nodesInPath) {
@@ -69,10 +93,10 @@ export default class PathfindingVisualizer extends Component {
   }
 
   visualizeDijkstra() {
-    const { grid } = this.state;
+    const { grid, start, finish } = this.state;
 
-    const startNode = grid[START_ROW][START_COLUMN];
-    const finishNode = grid[FINISH_ROW][FINISH_COLUMN];
+    const startNode = grid[start[0]][start[1]];
+    const finishNode = grid[finish[0]][finish[1]];
 
     const orderedNodes = dijkstra(grid, startNode, finishNode);
     const nodesInPath = getPath(finishNode);
@@ -175,6 +199,24 @@ const getGridWithWall = (grid, row, col) => {
     isWall: !node.isWall,
   };
   newGrid[row][col] = newNode;
+
+  return newGrid;
+};
+
+const updateStart = (grid, row, col, start) => {
+  const newGrid = grid.slice();
+
+  newGrid[row][col].isStart = true;
+  newGrid[start[0]][start[1]].isStart = false;
+
+  return newGrid;
+};
+
+const updateFinish = (grid, row, col, finish) => {
+  const newGrid = grid.slice();
+
+  newGrid[row][col].isFinish = true;
+  newGrid[finish[0]][finish[1]].isFinish = false;
 
   return newGrid;
 };
