@@ -3,7 +3,7 @@ import Node from './Node/Node';
 
 import { dijkstra, getPath } from '../Algorithms/dijkstra';
 
-import { Button } from 'react-bootstrap';
+import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import './PathfindingVisualizer.css';
 
 const START_ROW = 10;
@@ -18,6 +18,7 @@ export default class PathfindingVisualizer extends Component {
       grid: [],
       mouseIsPressed: false,
       holding: '',
+      create: 'walls',
       start: [START_ROW, START_COLUMN],
       finish: [FINISH_ROW, FINISH_COLUMN],
     };
@@ -29,20 +30,20 @@ export default class PathfindingVisualizer extends Component {
   }
 
   handleMouseDown(row, col) {
-    const grid = this.state.grid;
+    const { grid, create } = this.state;
     if (grid[row][col].isStart) {
       this.setState({ holding: 'start', mouseIsPressed: true });
     } else if (grid[row][col].isFinish) {
       this.setState({ holding: 'finish', mouseIsPressed: true });
     } else {
-      const newGrid = getGridWithWall(grid, row, col);
+      const newGrid = getGridWithSomething(grid, create, row, col);
       this.setState({ grid: newGrid, mouseIsPressed: true });
     }
   }
 
   handleMouseEnter(row, col) {
     if (!this.state.mouseIsPressed) return;
-    const { grid, holding } = this.state;
+    const { grid, holding, create } = this.state;
     if (holding === 'start') {
       const newGrid = updateStart(grid, row, col, this.state.start);
       if (newGrid) this.setState({ grid: newGrid, start: [row, col] });
@@ -50,7 +51,7 @@ export default class PathfindingVisualizer extends Component {
       const newGrid = updateFinish(grid, row, col, this.state.finish);
       if (newGrid) this.setState({ grid: newGrid, finish: [row, col] });
     } else {
-      const newGrid = getGridWithWall(grid, row, col);
+      const newGrid = getGridWithSomething(grid, create, row, col);
       this.setState({ grid: newGrid });
     }
   }
@@ -112,10 +113,29 @@ export default class PathfindingVisualizer extends Component {
     return (
       <>
         <div className='header'>
-          <Button variant='info' onClick={() => this.visualizeDijkstra()}>
+          <DropdownButton title='Creation Selector' variant='info' id='buttons'>
+            <Dropdown.Item
+              eventKey='1'
+              onClick={() => {
+                this.setState({ create: 'walls' });
+              }}>
+              Walls
+            </Dropdown.Item>
+            <Dropdown.Item
+              eventKey='2'
+              onClick={() => {
+                this.setState({ create: 'weights' });
+              }}>
+              Weights
+            </Dropdown.Item>
+          </DropdownButton>
+          <Button
+            variant='info'
+            id='buttons'
+            onClick={() => this.visualizeDijkstra()}>
             Visualize
           </Button>
-          <Button variant='info' onClick={() => this.clearGrid()}>
+          <Button variant='info' id='buttons' onClick={() => this.clearGrid()}>
             Clear
           </Button>
         </div>
@@ -133,6 +153,7 @@ export default class PathfindingVisualizer extends Component {
                     isStart,
                     isVisited,
                     isWall,
+                    isWeight,
                   } = node;
                   return (
                     <Node
@@ -142,6 +163,7 @@ export default class PathfindingVisualizer extends Component {
                       isFinish={isFinish}
                       isVisited={isVisited}
                       isWall={isWall}
+                      isWeight={isWeight}
                       mouseIsPressed={mouseIsPressed}
                       onMouseDown={(row, col) => this.handleMouseDown(row, col)}
                       onMouseEnter={(row, col) =>
@@ -170,6 +192,7 @@ const createNewNode = (row, col) => {
     isVisited: false,
     distance: Infinity,
     isWall: false,
+    isWeight: false,
     previousNode: null,
   };
 };
@@ -188,10 +211,14 @@ const getNewGrid = () => {
   return grid;
 };
 
-const getGridWithWall = (grid, row, col) => {
+const getGridWithSomething = (grid, create, row, col) => {
   const newGrid = grid.slice();
 
-  newGrid[row][col].isWall = !newGrid[row][col].isWall;
+  if (create === 'walls' && !newGrid[row][col].isWeight) {
+    newGrid[row][col].isWall = !newGrid[row][col].isWall;
+  } else if (create === 'weights' && !newGrid[row][col].isWall) {
+    newGrid[row][col].isWeight = !newGrid[row][col].isWeight;
+  }
 
   return newGrid;
 };

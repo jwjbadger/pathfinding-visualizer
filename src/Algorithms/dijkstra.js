@@ -34,7 +34,11 @@ const updateUnvisitedNeighbors = (currentNode, grid) => {
   const currentDistance = currentNode.distance;
 
   for (const neighbor of unvisitedNeighbors) {
-    neighbor.distance = currentDistance + 1;
+    if (neighbor.isWeight) {
+      neighbor.distance = currentDistance + 12;
+    } else {
+      neighbor.distance = currentDistance + 1;
+    }
     neighbor.previousNode = currentNode;
   }
 };

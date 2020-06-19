@@ -11,6 +11,7 @@ export default class Node extends Component {
       isFinish,
       isVisited,
       isWall,
+      isWeight,
       onMouseDown,
       onMouseEnter,
       onMouseUp,
@@ -25,6 +26,8 @@ export default class Node extends Component {
       ? 'node-visited'
       : isWall
       ? 'node-wall'
+      : isWeight
+      ? 'node-weight'
       : '';
 
     return (

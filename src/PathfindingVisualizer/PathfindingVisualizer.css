@@ -4,10 +4,10 @@
   font-size: 0;
 }
 
-button {
+#buttons {
   margin-left: 5px;
+  float: left;
 }
-
 .header {
   background-color: #343a40;
   height: 60px;

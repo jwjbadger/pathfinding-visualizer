@@ -7,16 +7,21 @@
 }
 
 .node-start {
-  background-image: url(./start.png);
+  background-image: url(./Images/start.png);
 }
 
 .node-finish {
-  background-image: url(./finish.png);
+  background-image: url(./Images/finish.png);
 }
 
 .node-wall {
   background-color: #43464b;
 }
+
+.node-weight {
+  background-image: url(./Images/weight.png);
+}
+
 .node-visited {
   animation-name: visitedAnimation;
   animation-duration: 1.5s;
