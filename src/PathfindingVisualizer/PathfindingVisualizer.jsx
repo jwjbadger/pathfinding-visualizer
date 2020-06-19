@@ -17,8 +17,7 @@ export default class PathfindingVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      holdingStart: false,
-      holdingFinish: false,
+      holding: '',
       start: [START_ROW, START_COLUMN],
       finish: [FINISH_ROW, FINISH_COLUMN],
     };
@@ -32,9 +31,9 @@ export default class PathfindingVisualizer extends Component {
   handleMouseDown(row, col) {
     const grid = this.state.grid;
     if (grid[row][col].isStart) {
-      this.setState({ holdingStart: true, mouseIsPressed: true });
+      this.setState({ holding: 'start', mouseIsPressed: true });
     } else if (grid[row][col].isFinish) {
-      this.setState({ holdingFinish: true, mouseIsPressed: true });
+      this.setState({ holding: 'finish', mouseIsPressed: true });
     } else {
       const newGrid = getGridWithWall(grid, row, col);
       this.setState({ grid: newGrid, mouseIsPressed: true });
@@ -43,13 +42,13 @@ export default class PathfindingVisualizer extends Component {
 
   handleMouseEnter(row, col) {
     if (!this.state.mouseIsPressed) return;
-    const { grid, holdingStart, holdingFinish } = this.state;
-    if (holdingStart) {
+    const { grid, holding } = this.state;
+    if (holding === 'start') {
       const newGrid = updateStart(grid, row, col, this.state.start);
-      this.setState({ grid: newGrid, start: [row, col] });
-    } else if (holdingFinish) {
+      if (newGrid) this.setState({ grid: newGrid, start: [row, col] });
+    } else if (holding === 'finish') {
       const newGrid = updateFinish(grid, row, col, this.state.finish);
-      this.setState({ grid: newGrid, finish: [row, col] });
+      if (newGrid) this.setState({ grid: newGrid, finish: [row, col] });
     } else {
       const newGrid = getGridWithWall(grid, row, col);
       this.setState({ grid: newGrid });
@@ -59,8 +58,7 @@ export default class PathfindingVisualizer extends Component {
   handleMouseUp() {
     this.setState({
       mouseIsPressed: false,
-      holdingStart: false,
-      holdingFinish: false,
+      holding: '',
     });
   }
 
@@ -192,21 +190,18 @@ const getNewGrid = () => {
 
 const getGridWithWall = (grid, row, col) => {
   const newGrid = grid.slice();
-  const node = newGrid[row][col];
 
-  const newNode = {
-    ...node,
-    isWall: !node.isWall,
-  };
-  newGrid[row][col] = newNode;
+  newGrid[row][col].isWall = !newGrid[row][col].isWall;
 
   return newGrid;
 };
 
 const updateStart = (grid, row, col, start) => {
   const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  if (node.isFinish || node.isWall) return;
 
-  newGrid[row][col].isStart = true;
+  node.isStart = true;
   newGrid[start[0]][start[1]].isStart = false;
 
   return newGrid;
@@ -214,8 +209,10 @@ const updateStart = (grid, row, col, start) => {
 
 const updateFinish = (grid, row, col, finish) => {
   const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  if (node.isStart || node.isWall) return;
 
-  newGrid[row][col].isFinish = true;
+  node.isFinish = true;
   newGrid[finish[0]][finish[1]].isFinish = false;
 
   return newGrid;
