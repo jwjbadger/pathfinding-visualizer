@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import Node from './Node/Node';
 
-import { dijkstra, getDijkstraPath } from '../Algorithms/dijkstra';
-import { aStar, getStarPath } from '../Algorithms/aStar';
+import { dijkstra, getDijkstraPath } from '../Algorithms/pathfinding/dijkstra';
+import { aStar, getStarPath } from '../Algorithms/pathfinding/aStar';
+
+import { randWeight } from '../Algorithms/maze/randWeight';
 
 import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import './PathfindingVisualizer.css';
@@ -151,6 +153,15 @@ export default class PathfindingVisualizer extends Component {
                 this.setState({ create: 'weights' });
               }}>
               Weights
+            </Dropdown.Item>
+          </DropdownButton>
+          <DropdownButton title='Generate Maze' variant='info' id='buttons'>
+            <Dropdown.Item
+              eventKey='1'
+              onClick={() => {
+                this.setState({ grid: randWeight(this.state.grid) });
+              }}>
+              Random Weight
             </Dropdown.Item>
           </DropdownButton>
           <Button
