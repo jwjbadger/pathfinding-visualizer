@@ -4,7 +4,7 @@ This project was created following the rough instructions given by [Clément Mih
 
 ## Viewing
 
-You can view this project through github pages [here](jwjbadger.github.io/pathfinding-visualizer/index.html).
+You can view this project through github pages [here](https://jwjbadger.github.io/pathfinding-visualizer/index.html).
 
 ## Running
 
