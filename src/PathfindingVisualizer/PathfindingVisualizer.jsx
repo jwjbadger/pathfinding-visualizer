@@ -5,6 +5,7 @@ import { dijkstra, getDijkstraPath } from '../Algorithms/pathfinding/dijkstra';
 import { aStar, getStarPath } from '../Algorithms/pathfinding/aStar';
 
 import { randWeight } from '../Algorithms/maze/randWeight';
+import { randWall } from '../Algorithms/maze/randWall';
 
 import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import './PathfindingVisualizer.css';
@@ -162,6 +163,13 @@ export default class PathfindingVisualizer extends Component {
                 this.setState({ grid: randWeight(this.state.grid) });
               }}>
               Random Weight
+            </Dropdown.Item>
+            <Dropdown.Item
+              eventKey='2'
+              onClick={() => {
+                this.setState({ grid: randWall(this.state.grid) });
+              }}>
+              Random Wall
             </Dropdown.Item>
           </DropdownButton>
           <Button
