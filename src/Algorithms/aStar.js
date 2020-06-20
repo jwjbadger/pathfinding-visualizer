@@ -1,13 +1,15 @@
-// This performs Dijkstra's algorithm WITHOUT finding the best
+// This performs the A* algorithm WITHOUT finding the best
 // path, it simply finds the order of the nodes in which we
 // explored. Later, in the PathfindingVisualizer.jsx file, we
 // will find the path by backtracking through to least weighted
-// path.
+// path (using a function defined here). Note that this is just
+// copied dijkstra.js, with a few addons.
 
-export function dijkstra(grid, startNode, finishNode) {
+export function aStar(grid, startNode, finishNode) {
   // Goal return value of this function
   const orderedNodes = [];
   startNode.distance = 0;
+  startNode.weightDistance = 0;
   const unvisited = getAllNodes(grid);
 
   // !! gives the boolean value of a number (i.e. 0 = false, 1 = true)
@@ -29,6 +31,10 @@ export function dijkstra(grid, startNode, finishNode) {
   }
 }
 
+const heuristic = (node, finish) => {
+  return Math.abs(node.row - finish.row) + Math.abs(node.col - finish.col);
+};
+
 const updateUnvisitedNeighbors = (currentNode, grid, finish) => {
   const unvisitedNeighbors = getUnvisitedNeighbors(currentNode, grid);
   const currentDistance = currentNode.distance;
@@ -39,6 +45,9 @@ const updateUnvisitedNeighbors = (currentNode, grid, finish) => {
     } else {
       neighbor.distance = currentDistance + 1;
     }
+
+    // Change their weight distance to reflect whether they are or aren't in the direction of the finish node
+    neighbor.weightDistance = heuristic(neighbor, finish) + neighbor.distance;
     neighbor.previousNode = currentNode;
   }
 };
@@ -61,7 +70,7 @@ const getUnvisitedNeighbors = (currentNode, grid) => {
 };
 
 const sortNodes = (nodeList) =>
-  nodeList.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
+  nodeList.sort((nodeA, nodeB) => nodeA.weightDistance - nodeB.weightDistance);
 
 const getAllNodes = (grid) => {
   const nodes = [];
@@ -75,7 +84,7 @@ const getAllNodes = (grid) => {
 
 // Function that backtracks AFTER the dijkstra main function
 // has been called. This will get the shortest path.
-export const getDijkstraPath = (finishNode) => {
+export const getStarPath = (finishNode) => {
   const nodesInPath = [];
   let currentNode = finishNode;
 

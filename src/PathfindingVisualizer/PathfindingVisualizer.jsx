@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Node from './Node/Node';
 
-import { dijkstra, getPath } from '../Algorithms/dijkstra';
+import { dijkstra, getDijkstraPath } from '../Algorithms/dijkstra';
+import { aStar, getStarPath } from '../Algorithms/aStar';
 
 import { Button, Dropdown, DropdownButton } from 'react-bootstrap';
 import './PathfindingVisualizer.css';
@@ -18,6 +19,7 @@ export default class PathfindingVisualizer extends Component {
       grid: [],
       mouseIsPressed: false,
       holding: '',
+      algorithm: 'dijkstra',
       create: 'walls',
       start: [START_ROW, START_COLUMN],
       finish: [FINISH_ROW, FINISH_COLUMN],
@@ -63,7 +65,7 @@ export default class PathfindingVisualizer extends Component {
     });
   }
 
-  animateDijkstra(orderedNodes, nodesInPath) {
+  animateAlgorithm(orderedNodes, nodesInPath) {
     for (let i = 0; i <= orderedNodes.length; i++) {
       if (i === orderedNodes.length) {
         setTimeout(() => {
@@ -91,16 +93,22 @@ export default class PathfindingVisualizer extends Component {
     return;
   }
 
-  visualizeDijkstra() {
-    const { grid, start, finish } = this.state;
+  visualizeAlgorithm() {
+    const { grid, start, finish, algorithm } = this.state;
 
     const startNode = grid[start[0]][start[1]];
     const finishNode = grid[finish[0]][finish[1]];
 
-    const orderedNodes = dijkstra(grid, startNode, finishNode);
-    const nodesInPath = getPath(finishNode);
+    const orderedNodes =
+      algorithm === 'aStar'
+        ? aStar(grid, startNode, finishNode)
+        : dijkstra(grid, startNode, finishNode);
+    const nodesInPath =
+      algorithm === 'aStar'
+        ? getStarPath(finishNode)
+        : getDijkstraPath(finishNode);
 
-    this.animateDijkstra(orderedNodes, nodesInPath);
+    this.animateAlgorithm(orderedNodes, nodesInPath);
   }
 
   clearGrid() {
@@ -113,6 +121,22 @@ export default class PathfindingVisualizer extends Component {
     return (
       <>
         <div className='header'>
+          <DropdownButton title='Algorithm' variant='info' id='buttons'>
+            <Dropdown.Item
+              eventKey='1'
+              onClick={() => {
+                this.setState({ algorithm: 'dijkstra' });
+              }}>
+              Dijkstra's
+            </Dropdown.Item>
+            <Dropdown.Item
+              eventKey='2'
+              onClick={() => {
+                this.setState({ algorithm: 'aStar' });
+              }}>
+              A*
+            </Dropdown.Item>
+          </DropdownButton>
           <DropdownButton title='Creation Selector' variant='info' id='buttons'>
             <Dropdown.Item
               eventKey='1'
@@ -132,7 +156,7 @@ export default class PathfindingVisualizer extends Component {
           <Button
             variant='info'
             id='buttons'
-            onClick={() => this.visualizeDijkstra()}>
+            onClick={() => this.visualizeAlgorithm()}>
             Visualize
           </Button>
           <Button variant='info' id='buttons' onClick={() => this.clearGrid()}>
@@ -191,6 +215,7 @@ const createNewNode = (row, col) => {
     isFinish: row === FINISH_ROW && col === FINISH_COLUMN,
     isVisited: false,
     distance: Infinity,
+    weightDistance: Infinity,
     isWall: false,
     isWeight: false,
     previousNode: null,
