@@ -245,7 +245,7 @@ const getNewGrid = () => {
   const grid = [];
 
   // Iterate over each row and column, and add each full row to grid
-  for (let row = 0; row < 30; row++) {
+  for (let row = 0; row < 15; row++) {
     const currentRow = [];
     for (let col = 0; col < 50; col++) {
       currentRow.push(createNewNode(row, col));
