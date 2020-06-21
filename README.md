@@ -14,7 +14,17 @@ If you want to try out this project **locally**, run:
 git clone https://github.com/jwjbadger/pathfinding-visualizer.git
 ```
 
-then, `npm run` or `npm run build` from the project's root folder depending on the amount of optimization you want.
+then, `npm run` or `npm run build` from the project's root folder depending on the amount of optimization you want. Also check out the [desktop version](#desktop-application) if you want to try an App rather than a webapp.
+
+## Desktop Application
+
+If you want to try the desktop application created with electron, use the following command to clone the branch:
+
+```bash
+git clone -b desktop --single-branch https://github.com/jwjbadger/pathfinding-visualizer.git
+```
+
+Then use `cd pathfinding-visualizer` to move to the local folder, then run `npm install` and `npm run build` to get a binary for your OS. Now, in the dist folder, their should be an installer which you can run to install and run the application.
 
 ## The Algorithms
 
