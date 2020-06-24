@@ -2,6 +2,14 @@
 
 This project was created following the rough instructions given by [Clément Mihailescu](https://www.youtube.com/watch?v=msttfIHHkak). This project will hopefully be used to learn about React and path-finding algorithms. Hopefully this project will also give an insight into creating projects and how to go about working on them.
 
+## What Am I Looking At?
+
+You are watching what a pathfinding algorithm is 'looking' at when it decides to go somewhere. Any of the blue nodes are areas that the algorithm is currently 'exploring'. The yellow nodes represent the path from the start to end node. The weights (accessed through creation selector) represent a node that is tough to get to. In real life this might represent a road that is wet, snowy, or somewhere else that is hard to get to. The '>' symbol represents the start and the flag represents the finish. The walls represent an area that can't be moved through (like a blocked off road).
+
+## What I Learned
+
+With this project, I learned a bit about how to use git, Github, and manage projects. This project taught me about web frameworks, specifically React. I also learned a bit about Electron and using Node.js in order to create the project and the Electron app. I feel as though I learned a lot with this project about frontend development in general, including: working with frameworks, state, laying out pages, and css.
+
 ## Viewing
 
 You can view this project through github pages [here](https://jwjbadger.github.io/pathfinding-visualizer/index.html).
